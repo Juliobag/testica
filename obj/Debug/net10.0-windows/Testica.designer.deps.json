@@ -1,0 +1,28 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "System.Data.SQLite/2.0.4": {
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {
+            "assemblyVersion": "2.0.4.0",
+            "fileVersion": "2.0.4.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "System.Data.SQLite/2.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iiawN8l6QBzLZTK2BQRyq/1XmvDONghjvXoDhkkQgPTG8bRIsmIxJV1+Lc75fviNgMnjAE3wxReVJAF7P1hkoQ==",
+      "path": "system.data.sqlite/2.0.4",
+      "hashPath": "system.data.sqlite.2.0.4.nupkg.sha512"
+    }
+  }
+}

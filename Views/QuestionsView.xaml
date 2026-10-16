@@ -1,0 +1,164 @@
+﻿<UserControl x:Class="Testica.Views.QuestionsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="Background" Value="{DynamicResource InputBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="12,7" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="RowHeaderWidth" Value="0" />
+            <Setter Property="RowHeight" Value="40" />
+            <Setter Property="ColumnHeaderHeight" Value="40" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="0,18,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52" />
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="Banque de questions" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+            <TextBlock Text="Rédigez les énoncés et ordonnez leurs propositions." Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,8,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="190" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     ToolTip="Rechercher dans les énoncés" VerticalContentAlignment="Center" />
+            <ComboBox Grid.Column="1" Margin="10,0,0,0" Height="34"
+                      ItemsSource="{Binding StatusFilters}" SelectedItem="{Binding SelectedStatusFilter}" />
+            <Button Grid.Column="2" Content="Nouvelle question" Command="{Binding NewQuestionCommand}"
+                    Margin="10,0,0,0" />
+        </Grid>
+        <Grid Grid.Row="2" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.9*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="1.35*" />
+            </Grid.ColumnDefinitions>
+            <DataGrid ItemsSource="{Binding FilteredQuestions}" SelectedItem="{Binding SelectedQuestion}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Énoncé" Binding="{Binding Statement}" Width="2*" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Niveau" Binding="{Binding Difficulty}" Width="70" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Statut" Binding="{Binding Status}" Width="95" IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Border Style="{StaticResource ElevatedCardStyle}" Padding="18" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock Text="Énoncé et contexte" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                            <TextBox Text="{Binding Statement, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,12,0,0" MinHeight="78" AcceptsReturn="True" TextWrapping="Wrap" />
+                            <TextBlock Text="Contexte complémentaire" Margin="0,12,0,5" Foreground="{DynamicResource BodyTextBrush}" />
+                            <TextBox Text="{Binding Context, UpdateSourceTrigger=PropertyChanged}"
+                                     MinHeight="62" AcceptsReturn="True" TextWrapping="Wrap" />
+                            <Grid Margin="0,14,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="110" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Thème" Foreground="{DynamicResource BodyTextBrush}" Margin="0,0,0,5" />
+                                    <ComboBox ItemsSource="{Binding Themes}" DisplayMemberPath="Name" SelectedValuePath="Id"
+                                              SelectedValue="{Binding SelectedThemeId}" Height="34" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Cycle" Foreground="{DynamicResource BodyTextBrush}" Margin="0,0,0,5" />
+                                    <ComboBox ItemsSource="{Binding Cycles}" DisplayMemberPath="Name" SelectedValuePath="Id"
+                                              SelectedValue="{Binding SelectedCycleId}" Height="34" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Difficulté" Foreground="{DynamicResource BodyTextBrush}" Margin="0,0,0,5" />
+                                    <ComboBox ItemsSource="{Binding DifficultyLevels}" SelectedItem="{Binding Difficulty}" Height="34" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="150" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Illustration" Foreground="{DynamicResource BodyTextBrush}" Margin="0,0,0,5" />
+                                    <TextBox Text="{Binding ImagePath, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                                <Button Grid.Column="2" Content="Parcourir…" Command="{Binding ChooseImageCommand}"
+                                        VerticalAlignment="Bottom" />
+                            </Grid>
+                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                <TextBlock Text="Statut" Foreground="{DynamicResource BodyTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                <ComboBox SelectedValue="{Binding QuestionStatus}" SelectedValuePath="Tag" Width="150" Height="32">
+                                    <ComboBoxItem Content="Brouillon" Tag="draft" />
+                                    <ComboBoxItem Content="Active" Tag="active" />
+                                    <ComboBoxItem Content="Inactive" Tag="inactive" />
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource ElevatedCardStyle}" Padding="18" Margin="0,12,0,0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1" CornerRadius="6">
+                        <StackPanel>
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="Propositions" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                                    <TextBlock Text="Cochez chaque réponse correcte et ajustez l’ordre." Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <Button Content="Ajouter une réponse" Command="{Binding AddAnswerCommand}"
+                                        HorizontalAlignment="Right" VerticalAlignment="Center" />
+                            </Grid>
+                            <DataGrid ItemsSource="{Binding Answers}" SelectedItem="{Binding SelectedAnswer}"
+                                      Height="205" Margin="0,12,0,0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Ordre" Binding="{Binding OrderIndex, UpdateSourceTrigger=LostFocus}" Width="65" />
+                                    <DataGridTextColumn Header="Repère" Binding="{Binding Label, UpdateSourceTrigger=PropertyChanged}" Width="75" />
+                                    <DataGridTextColumn Header="Texte de la réponse" Binding="{Binding AnswerText, UpdateSourceTrigger=PropertyChanged}" Width="*" />
+                                    <DataGridCheckBoxColumn Header="Correcte" Binding="{Binding IsCorrect, UpdateSourceTrigger=PropertyChanged}" Width="90" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Grid Margin="0,12,0,0">
+                                <TextBlock Text="{Binding ValidationMessage}" Foreground="{DynamicResource DangerTextBrush}" VerticalAlignment="Center" />
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Button Content="Retirer la réponse" Command="{Binding RemoveAnswerCommand}"
+                                            CommandParameter="{Binding SelectedAnswer}" Margin="0,0,8,0" />
+                                    <Button Content="Enregistrer la question" Command="{Binding SaveQuestionCommand}" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>
+
+
+
+

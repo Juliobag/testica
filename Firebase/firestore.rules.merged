@@ -1,0 +1,123 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function admin() {
+      return signedIn() && (request.auth.token.admin == true || request.auth.token.superadmin == true);
+    }
+
+    function superAdmin() {
+      return signedIn() && request.auth.token.superadmin == true;
+    }
+
+    function canReadContent() {
+      return signedIn() && (admin() || resource.data.status == 'published');
+    }
+
+    match /users/{userId} {
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['displayName', 'email', 'role', 'createdAt'])
+        && request.resource.data.role == 'player';
+      allow read: if signedIn() && (request.auth.uid == userId || admin());
+      allow update: if signedIn() && request.auth.uid == userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['displayName', 'photoUrl', 'updatedAt']);
+      allow update: if admin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && request.resource.data.status in ['active', 'suspended'];
+      allow delete: if admin();
+    }
+
+    match /contentVersions/{versionId} {
+      allow read: if canReadContent();
+      allow write: if admin();
+    }
+
+    match /themes/{themeId} {
+      allow read: if canReadContent();
+      allow write: if admin();
+    }
+
+    match /cycles/{cycleId} {
+      allow read: if canReadContent();
+      allow write: if admin();
+    }
+
+    match /quizzes/{quizId} {
+      allow read: if canReadContent();
+      allow write: if admin();
+    }
+
+    match /questions/{questionId} {
+      allow read: if canReadContent();
+      allow write: if admin();
+    }
+
+    // Keep correct answers out of client-readable question documents.
+    match /questionAnswers/{questionId} {
+      allow read, write: if admin();
+    }
+
+    // Scores, answers, and match state must be written by trusted backend code.
+    match /games/{gameId} {
+      allow read: if signedIn()
+        && request.auth.uid in resource.data.participantIds;
+      allow write: if admin();
+
+      match /answers/{answerId} {
+        allow read: if signedIn()
+          && request.auth.uid in get(/databases/$(database)/documents/games/$(gameId)).data.participantIds;
+        allow write: if admin();
+      }
+    }
+
+    match /syncLog/{logId} {
+      allow read: if admin();
+      allow write: if false;
+    }
+
+    match /auditLog/{logId} {
+      allow read: if admin();
+      allow create: if admin()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['userId', 'action', 'objectType', 'objectId', 'status', 'createdAt']);
+      allow update, delete: if false;
+    }
+
+    match /globalSettings/{settingId} {
+      allow read, write: if superAdmin();
+    }
+
+    match /testica_authoring/{documentId} {
+      function editor() {
+        return signedIn()
+          && exists(/databases/$(database)/documents/testica_sync_editors/$(request.auth.uid))
+          && get(/databases/$(database)/documents/testica_sync_editors/$(request.auth.uid)).data.active == true;
+      }
+
+      function validAuthoringDocument() {
+        let data = request.resource.data;
+        return data.keys().hasAll(['entityType', 'recordId', 'deleted'])
+          && data.keys().hasOnly(['entityType', 'recordId', 'deleted', 'payloadJson'])
+          && data.entityType in ['theme', 'cycle', 'questionnaire', 'question', 'answer', 'questionnaire_question']
+          && data.recordId is string
+          && data.recordId.size() > 0
+          && data.deleted is bool
+          && (data.deleted == true || data.payloadJson is string);
+      }
+
+      allow read: if editor();
+      allow create, update: if editor() && validAuthoringDocument();
+      // The WPF client represents deletions with a tombstone update.
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,138 @@
+﻿<UserControl x:Class="Testica.Views.ThemesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="9,7" />
+            <Setter Property="Background" Value="{DynamicResource InputBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="MinWidth" Value="88" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="RowHeaderWidth" Value="0" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="RowHeight" Value="42" />
+            <Setter Property="ColumnHeaderHeight" Value="42" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="0,18,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Référentiels" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="Organisez les thèmes et les cycles disponibles dans la banque." Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <TextBlock Text="Statut" Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center" Margin="0,0,9,0" />
+                <ComboBox Width="132" Height="34" ItemsSource="{Binding StatusFilters}"
+                          SelectedItem="{Binding SelectedStatusFilter}" />
+                <Button Content="Ajouter un thème" Command="{Binding NewThemeCommand}" Margin="10,0,0,0" />
+                <Button Content="Ajouter un cycle" Command="{Binding NewCycleCommand}" Margin="8,0,0,0" />
+            </StackPanel>
+        </Grid>
+        <TabControl Grid.Row="1" Margin="0,14,0,0" SelectedIndex="{Binding SelectedReferentialTab}">
+            <TabItem Header="Thèmes">
+                <Grid Margin="0,14,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.6*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <DataGrid ItemsSource="{Binding FilteredThemes}" SelectedItem="{Binding SelectedTheme}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="1.2*" />
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*" />
+                            <DataGridTextColumn Header="Statut" Binding="{Binding Status}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Border Style="{StaticResource ElevatedCardStyle}" Grid.Column="2" Padding="20" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1" CornerRadius="6">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                <Button Content="Nouveau" Command="{Binding NewThemeCommand}" MinWidth="96" Margin="0,0,8,0" />
+                                <Button Content="Enregistrer" Command="{Binding SaveThemeCommand}" MinWidth="112" />
+                            </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                            <TextBlock Text="Détail du thème" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                            <TextBlock Text="Nom" Margin="0,12,0,5" Foreground="{DynamicResource BodyTextBrush}" />
+                            <TextBox Text="{Binding ThemeName, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="Description" Margin="0,10,0,5" Foreground="{DynamicResource BodyTextBrush}" />
+                            <TextBox Text="{Binding ThemeDescription, UpdateSourceTrigger=PropertyChanged}"
+                                     MinHeight="76" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+                            <CheckBox Content="Thème actif" IsChecked="{Binding ThemeIsActive}" Margin="0,10,0,0" />
+                            </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Cycles">
+                <Grid Margin="0,14,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.6*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <DataGrid ItemsSource="{Binding FilteredCycles}" SelectedItem="{Binding SelectedCycle}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Ordre" Binding="{Binding OrderIndex}" Width="74" />
+                            <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="1.2*" />
+                            <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="2*" />
+                            <DataGridTextColumn Header="Statut" Binding="{Binding Status}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Border Style="{StaticResource ElevatedCardStyle}" Grid.Column="2" Padding="20" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1" CornerRadius="6">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                <Button Content="Nouveau" Command="{Binding NewCycleCommand}" MinWidth="96" Margin="0,0,8,0" />
+                                <Button Content="Enregistrer" Command="{Binding SaveCycleCommand}" MinWidth="112" />
+                            </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                            <TextBlock Text="Détail du cycle" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                            <TextBlock Text="Nom" Margin="0,12,0,5" Foreground="{DynamicResource BodyTextBrush}" />
+                            <TextBox Text="{Binding CycleName, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="Description" Margin="0,10,0,5" Foreground="{DynamicResource BodyTextBrush}" />
+                            <TextBox Text="{Binding CycleDescription, UpdateSourceTrigger=PropertyChanged}"
+                                     MinHeight="66" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+                            <TextBlock Text="Ordre d’affichage" Margin="0,10,0,5" Foreground="{DynamicResource BodyTextBrush}" />
+                            <TextBox Text="{Binding CycleOrderIndex, UpdateSourceTrigger=LostFocus}" />
+                            <CheckBox Content="Cycle actif" IsChecked="{Binding CycleIsActive}" Margin="0,10,0,0" />
+                            </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
+
+
+
+
+

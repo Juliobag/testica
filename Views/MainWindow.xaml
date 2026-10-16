@@ -1,0 +1,127 @@
+﻿    <Window x:Class="Testica.Views.MainWindow"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:views="clr-namespace:Testica.Views"
+            Title="Testica" Height="850" Width="1440"
+            MinHeight="720" MinWidth="1080"
+            Icon="pack://application:,,,/Testica;component/Assets/app.ico"
+            Background="{DynamicResource CanvasBrush}"
+            FontFamily="Segoe UI">
+        <Window.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <Style x:Key="NavigationButton" TargetType="RadioButton">
+                <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RadioButton">
+                            <Border x:Name="NavigationBorder" Background="Transparent" BorderBrush="Transparent"
+                                    BorderThickness="1" CornerRadius="8" Padding="18,12">
+                                <ContentPresenter RecognizesAccessKey="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="NavigationBorder" Property="Background" Value="{DynamicResource AccentBrush}" />
+                                    <Setter TargetName="NavigationBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                    <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver" Value="True" />
+                                        <Condition Property="IsChecked" Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="NavigationBorder" Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Window.Resources>
+        <Grid Margin="32,24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="76" />
+                <RowDefinition Height="56" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Width="46" Height="46" CornerRadius="12" Background="White"
+                        VerticalAlignment="Center" ClipToBounds="True">
+                    <Image Source="pack://application:,,,/Testica;component/Assets/logo.png" Stretch="UniformToFill" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="13,0" VerticalAlignment="Center">
+                    <TextBlock Text="TESTICA" Foreground="{DynamicResource AccentBrush}" FontSize="13"
+                               FontWeight="Bold" />
+                    <TextBlock Text="Édition des contenus pédagogiques" Foreground="{DynamicResource MutedTextBrush}"
+                               FontSize="13" Margin="0,3,0,0" />
+                </StackPanel>
+                <Button Grid.Column="2" Content="{Binding ThemeToggleLabel}" Command="{Binding ToggleThemeCommand}"
+                        Padding="13,10" Margin="0,0,10,0"
+                        Background="{DynamicResource AccentSoftBrush}" Foreground="{DynamicResource PrimaryTextBrush}"
+                        BorderThickness="0" FontWeight="SemiBold" ToolTip="Basculer entre le mode clair et le mode sombre" />
+                <Button Grid.Column="3" Content="Ajouter +" Padding="16,10" Margin="0,0,10,0"
+                        Background="{DynamicResource AccentBrush}" Foreground="{DynamicResource AccentTextBrush}" BorderThickness="0"
+                        FontWeight="SemiBold" Click="OpenAddMenuClick"
+                        ToolTip="Créer un thème, un cycle, une question ou un questionnaire">
+                    <Button.ContextMenu>
+                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                            <MenuItem Header="Ajouter un thème" Command="{Binding AddThemeCommand}" />
+                            <MenuItem Header="Ajouter un cycle" Command="{Binding AddCycleCommand}" />
+                            <Separator />
+                            <MenuItem Header="Ajouter une question" Command="{Binding AddQuestionCommand}" />
+                            <MenuItem Header="Ajouter un questionnaire" Command="{Binding AddQuestionnaireCommand}" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Border Style="{StaticResource ElevatedCardStyle}" Grid.Column="4" Padding="13,9" CornerRadius="9"
+                        BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource SurfaceBrush}"
+                        ToolTip="{Binding DatabasePath}"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="8" Height="8" Fill="{DynamicResource SuccessBrush}" VerticalAlignment="Center" />
+                        <StackPanel Margin="8,0,0,0">
+                            <TextBlock Text="SQLite · connectée" Foreground="{DynamicResource SuccessTextBrush}" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding DatabasePath}" Foreground="{DynamicResource MutedTextBrush}" FontSize="10" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <RadioButton Content="Thèmes &amp; cycles" GroupName="MainNavigation"
+                             IsChecked="{Binding IsThemesSelected}" Style="{StaticResource NavigationButton}" />
+                <RadioButton Content="Banque de questions" GroupName="MainNavigation"
+                             IsChecked="{Binding IsQuestionsSelected}" Style="{StaticResource NavigationButton}" />
+                <RadioButton Content="Questionnaires" GroupName="MainNavigation"
+                             IsChecked="{Binding IsQuestionnairesSelected}" Style="{StaticResource NavigationButton}" />
+                <RadioButton Content="Export &amp; synchronisation" GroupName="MainNavigation"
+                             IsChecked="{Binding IsExportSelected}" Style="{StaticResource NavigationButton}" />
+            </StackPanel>
+            <Border Style="{StaticResource ElevatedCardStyle}" Grid.Row="2" Background="{DynamicResource PanelBrush}" CornerRadius="14" Padding="16">
+            <Grid>
+                <views:ThemesView DataContext="{Binding Themes}"
+                                  Visibility="{Binding DataContext.IsThemesSelected, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <views:QuestionsView DataContext="{Binding Questions}"
+                                     Visibility="{Binding DataContext.IsQuestionsSelected, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <views:QuestionnairesView DataContext="{Binding Questionnaires}"
+                                          Visibility="{Binding DataContext.IsQuestionnairesSelected, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <views:ExportView DataContext="{Binding Export}"
+                                  Visibility="{Binding DataContext.IsExportSelected, RelativeSource={RelativeSource AncestorType={x:Type Window}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </Grid>
+            </Border>
+        </Grid>
+    </Window>
+
+
+
+
+
+

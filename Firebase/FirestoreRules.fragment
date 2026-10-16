@@ -1,0 +1,24 @@
+// Add this match inside the existing match /databases/{database}/documents block.
+match /testica_authoring/{documentId} {
+  function editor() {
+    return request.auth != null
+      && exists(/databases/$(database)/documents/testica_sync_editors/$(request.auth.uid))
+      && get(/databases/$(database)/documents/testica_sync_editors/$(request.auth.uid)).data.active == true;
+  }
+
+  function validAuthoringDocument() {
+    let data = request.resource.data;
+    return data.keys().hasAll(['entityType', 'recordId', 'deleted'])
+      && data.keys().hasOnly(['entityType', 'recordId', 'deleted', 'payloadJson'])
+      && data.entityType in ['theme', 'cycle', 'questionnaire', 'question', 'answer', 'questionnaire_question']
+      && data.recordId is string
+      && data.recordId.size() > 0
+      && data.deleted is bool
+      && (data.deleted == true || (data.payloadJson is string));
+  }
+
+  allow read: if editor();
+  allow create, update: if editor() && validAuthoringDocument();
+  // The WPF client represents deletions with a tombstone update.
+  allow delete: if false;
+}

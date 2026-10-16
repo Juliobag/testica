@@ -1,0 +1,152 @@
+﻿<UserControl x:Class="Testica.Views.QuestionnairesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="MinHeight" Value="35" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="Background" Value="{DynamicResource InputBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="Padding" Value="14,8" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="CanUserAddRows" Value="False" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="GridLinesVisibility" Value="Horizontal" />
+            <Setter Property="RowHeaderWidth" Value="0" />
+            <Setter Property="RowHeight" Value="39" />
+            <Setter Property="ColumnHeaderHeight" Value="40" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource BodyTextBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="0,18,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Questionnaires" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="Composez les séquences et choisissez leur ordre de passage." Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
+            </StackPanel>
+            <Button Content="Ajouter un questionnaire" Command="{Binding NewQuestionnaireCommand}"
+                    HorizontalAlignment="Right" VerticalAlignment="Center" MinHeight="38" Padding="14,8"
+                    Background="{DynamicResource AccentBrush}" Foreground="{DynamicResource AccentTextBrush}" BorderThickness="0" FontWeight="SemiBold" />
+        </Grid>
+        <Grid Grid.Row="1" Margin="0,14,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.78*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="1.55*" />
+            </Grid.ColumnDefinitions>
+            <DataGrid ItemsSource="{Binding Questionnaires}" SelectedItem="{Binding SelectedQuestionnaire}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Titre" Binding="{Binding Title}" Width="*" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Statut" Binding="{Binding Status}" Width="88" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Nb." Binding="{Binding QuestionLimit}" Width="55" IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Border Style="{StaticResource ElevatedCardStyle}" Padding="18" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6">
+                        <StackPanel>
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="Configuration" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                                    <TextBlock Text="Définissez le cadre et le mode de tirage." Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="Titre" Foreground="{DynamicResource BodyTextBrush}" Margin="0,16,0,5" />
+                            <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="Description" Foreground="{DynamicResource BodyTextBrush}" Margin="0,12,0,5" />
+                            <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                                     MinHeight="58" AcceptsReturn="True" TextWrapping="Wrap" />
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="120" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Thème (facultatif)" Foreground="{DynamicResource BodyTextBrush}" Margin="0,0,0,5" />
+                                    <ComboBox ItemsSource="{Binding Themes}" DisplayMemberPath="Name" SelectedValuePath="Id"
+                                              SelectedValue="{Binding SelectedThemeId}" Height="34" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Cycle (facultatif)" Foreground="{DynamicResource BodyTextBrush}" Margin="0,0,0,5" />
+                                    <ComboBox ItemsSource="{Binding Cycles}" DisplayMemberPath="Name" SelectedValuePath="Id"
+                                              SelectedValue="{Binding SelectedCycleId}" Height="34" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Limite" Foreground="{DynamicResource BodyTextBrush}" Margin="0,0,0,5" />
+                                    <TextBox Text="{Binding QuestionLimit, UpdateSourceTrigger=LostFocus}" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid Margin="0,12,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="160" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Ordre" Foreground="{DynamicResource BodyTextBrush}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <ComboBox SelectedValue="{Binding OrderMode}" SelectedValuePath="Tag" Width="150" Height="34">
+                                        <ComboBoxItem Content="Fixe" Tag="fixed" />
+                                        <ComboBoxItem Content="Aléatoire" Tag="random" />
+                                    </ComboBox>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="Statut" Foreground="{DynamicResource BodyTextBrush}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                    <ComboBox SelectedValue="{Binding Status}" SelectedValuePath="Tag" Width="100" Height="34">
+                                        <ComboBoxItem Content="Brouillon" Tag="draft" />
+                                        <ComboBoxItem Content="Actif" Tag="active" />
+                                        <ComboBoxItem Content="Archivé" Tag="archived" />
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource ElevatedCardStyle}" Padding="18" Margin="0,12,0,0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1" CornerRadius="6">
+                        <StackPanel>
+                            <TextBlock Text="Questions incluses" FontSize="17" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                            <TextBlock Text="Cochez les questions et modifiez leur ordre si le mode est fixe."
+                                       Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,10" />
+                            <DataGrid ItemsSource="{Binding QuestionOptions}" Height="250">
+                                <DataGrid.Columns>
+                                    <DataGridCheckBoxColumn Header="Inclure" Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" Width="68" />
+                                    <DataGridTextColumn Header="Ordre" Binding="{Binding OrderIndex, UpdateSourceTrigger=LostFocus}" Width="64" />
+                                    <DataGridTextColumn Header="Énoncé" Binding="{Binding Question.Statement}" Width="*" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Niv." Binding="{Binding Question.Difficulty}" Width="50" IsReadOnly="True" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Grid Margin="0,12,0,0">
+                                <TextBlock Text="{Binding Feedback}" Foreground="{DynamicResource DangerTextBrush}" VerticalAlignment="Center" />
+                                <Button Content="Enregistrer le questionnaire" Command="{Binding SaveQuestionnaireCommand}"
+                                        HorizontalAlignment="Right" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>
+
+
+
+

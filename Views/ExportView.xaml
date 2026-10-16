@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Testica.Views.ExportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Setter Property="MinHeight" Value="42" />
+            <Setter Property="Padding" Value="18,9" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="0,18,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock Text="Export &amp; synchronisation" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+            <TextBlock Text="Validez et empaquetez un instantané versionné de la base locale." Foreground="{DynamicResource MutedTextBrush}" Margin="0,4,0,0" />
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource ElevatedCardStyle}" Padding="24" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6">
+                <StackPanel>
+                        <TextBlock Text="Paquet de publication" FontSize="19" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                        <TextBlock Text="Le manifeste inclut les métadonnées de version, les changements depuis la dernière publication, les données actives et les médias référencés."
+                               TextWrapping="Wrap" Foreground="{DynamicResource MutedTextBrush}" Margin="0,10,0,0" />
+                        <Button Content="Générer le paquet ZIP…" Command="{Binding CreatePackageCommand}"
+                            HorizontalAlignment="Left" Margin="0,20,0,0" />
+                        <Button Content="Importer un fichier JSON…" Command="{Binding ImportJsonCommand}"
+                            HorizontalAlignment="Left" Margin="0,10,0,0" />
+                    <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Foreground="{DynamicResource BodyTextBrush}" Margin="0,18,0,0" />
+                    <TextBlock Text="{Binding LastExportPath}" TextWrapping="Wrap" Foreground="{DynamicResource AccentBrush}" Margin="0,6,0,0" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource ElevatedCardStyle}" Grid.Column="2" Padding="24" Background="{DynamicResource PanelBrush}" BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1" CornerRadius="6">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel>
+                    <TextBlock Text="Synchronisation" FontSize="19" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Cloud Firestore · espace d’édition séparé" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource SuccessTextBrush}" Margin="0,18,0,0" />
+                    <TextBlock Text="Les données de ctb.sqlite sont synchronisées dans les deux sens avec testica_authoring. Les collections opérationnelles ne sont pas ciblées."
+                               TextWrapping="Wrap" Foreground="{DynamicResource BodyTextBrush}" Margin="0,7,0,0" />
+                    <TextBlock Text="Compte Firebase" Foreground="{DynamicResource BodyTextBrush}" Margin="0,16,0,5" />
+                    <TextBox Text="{Binding FirebaseEmail, UpdateSourceTrigger=PropertyChanged}" MinHeight="36" Padding="9,7" />
+                    <TextBlock Text="Mot de passe Firebase (pas le mot de passe Gmail)" Foreground="{DynamicResource BodyTextBrush}" Margin="0,11,0,5" />
+                    <PasswordBox x:Name="FirebasePassword" MinHeight="36" Padding="9,7" />
+                    <Button Content="Synchroniser maintenant" Click="FirebaseSyncClick" IsEnabled="{Binding IsFirebaseSyncEnabled}"
+                            HorizontalAlignment="Left" Margin="0,15,0,0" />
+                    <TextBlock Text="{Binding FirebaseSyncMessage}" TextWrapping="Wrap" Foreground="{DynamicResource BodyTextBrush}" Margin="0,12,0,0" />
+                </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
+
+
+
+

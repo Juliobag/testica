@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Testica.csproj" />
+  <Project Path="Testica_Setup/Testica_Setup.vdproj" Type="Installer">
+    <Build />
+  </Project>
+</Solution>
